@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import './App.css';
-import connectDB from './connectDB';
-
-connectDB();
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -10,13 +7,19 @@ function App() {
 
   const addTodo = () => {
     if (newTodo.trim() !== '') {
-      setTodos([...todos, newTodo]);
+      setTodos([...todos, { text: newTodo, completed: false }]);
       setNewTodo('');
     }
   };
 
   const handleInputChange = (event) => {
     setNewTodo(event.target.value);
+  };
+
+  const handleCheckboxChange = (index) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].completed = !updatedTodos[index].completed;
+    setTodos(updatedTodos);
   };
 
   return (
@@ -33,7 +36,17 @@ function App() {
       </div>
       <ul>
         {todos.map((todo, index) => (
-          <li key={index}>{todo}</li>
+          <li
+            key={index}
+            className={todo.completed ? 'completed' : ''}
+          >
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => handleCheckboxChange(index)}
+            />
+            {todo.text}
+          </li>
         ))}
       </ul>
     </div>
